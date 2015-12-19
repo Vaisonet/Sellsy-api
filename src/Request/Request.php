@@ -1,7 +1,7 @@
 <?php
 
 
-namespace SellsyApi;
+namespace SellsyApi\Request;
 
 
 use GuzzleHttp\Client;
@@ -10,7 +10,7 @@ use GuzzleHttp\Promise\Promise;
 use GuzzleHttp\Promise\PromiseInterface;
 use Psr\Http\Message\ResponseInterface;
 
-class Request {
+class Request implements AsyncRequestInterface {
 
     /**
      * @var string
@@ -102,8 +102,8 @@ class Request {
     }
 
     /**
-     * @param $method
-     * @param $params
+     * @param mixed $method
+     * @param mixed $params
      *
      * @return ResponseInterface
      */
@@ -162,7 +162,7 @@ class Request {
      *
      * @return mixed
      * @throws \OAuthException
-     * @throws \SellsyError
+     * @throws \SellsyApi\Exception\SellsyError
      * @throws \UnexpectedValueException
      */
     protected function handleResponse ($response) {
@@ -186,8 +186,9 @@ class Request {
             if (array_key_exists('error', $array) && is_array($error = $array['error'])
                 && array_key_exists('code', $error)
             ) {
-                throw new \SellsyError(array_key_exists('message', $error) ? $error['message'] : '', $error['code'],
-                                       array_key_exists('more', $error) ? $error['more'] : NULL);
+                throw new \SellsyApi\Exception\SellsyError(array_key_exists('message', $error) ? $error['message'] : '',
+                                                           $error['code'],
+                                                           array_key_exists('more', $error) ? $error['more'] : NULL);
             } else {
                 throw new \UnexpectedValueException('Unknown Sellsy error');
             }
@@ -203,9 +204,9 @@ class Request {
     }
 
     /**
-     * @param $method
-     * @param $params
-     * @param $requestId
+     * @param string $method
+     * @param mixed  $params
+     * @param string $requestId
      *
      * @return array
      */

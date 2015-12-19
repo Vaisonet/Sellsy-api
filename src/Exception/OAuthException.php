@@ -1,7 +1,7 @@
 <?php
 
 
-namespace SellsyApi;
+namespace SellsyApi\Exception;
 
 
 class OAuthException extends \RuntimeException {

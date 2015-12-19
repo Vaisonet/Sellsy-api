@@ -1,6 +1,10 @@
 <?php
 
 
+namespace SellsyApi\Exception;
+
+use Exception;
+
 class SellsyError extends Exception {
 
     /**
