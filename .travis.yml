@@ -6,4 +6,8 @@ php:
   - 7.0
   - hhvm
 
-script: phpunit test/
+before_install:
+ - composer selfupdate
+ - composer update
+
+script: phpunit --bootstrap vendor/autoload.php test/
