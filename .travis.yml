@@ -8,4 +8,4 @@ before_install:
  - composer selfupdate
  - composer update
 
-script: phpunit --bootstrap vendor/autoload.php test/
+script: phpunit --bootstrap vendor/autoload.php tests/
