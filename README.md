@@ -7,6 +7,7 @@ Sellsy Client Library
 PHP library which helps to call Sellsy's API
 
 ```php
+<?php
 $client = new Client(['userToken'      => 'xxx', 'userSecret'     => 'xxx',
                       'consumerToken'  => 'xxx', 'consumerSecret' => 'xxx',
                      ]);
