@@ -75,6 +75,8 @@ class RequestTest extends \PHPUnit_Framework_TestCase {
         $this->assertNull($request->getEndPoint());
         $this->assertSame($request, $request->setEndPoint('endPoint'));
         $this->assertEquals('endPoint', $request->getEndPoint());
+        $request = new Request('', '', '', '', 'endPointBis');
+        $this->assertSame('endPointBis', $request->getEndPoint());
     }
 
     public function testCall () {
@@ -122,6 +124,47 @@ class RequestTest extends \PHPUnit_Framework_TestCase {
         if ($otherwiseCount != 1) {
             throw new \PHPUnit_Framework_ExpectationFailedException('OnRejected callback was expected to be called once.');
         }
+    }
+
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testCallWithoutEndPoint () {
+        $request = $this->createRequest();
+        $request->call('', []);
+    }
+
+    public function testCallWithoutClientInitialize () {
+        $request = $this->createRequest();
+        $request->setEndPoint('http://github.com');
+        $prop = new \ReflectionProperty($request, 'client');
+        $prop->setAccessible(TRUE);
+        $this->assertNull($prop->getValue($request));
+        try {
+            $request->call('test', [])->wait();
+        } catch (\Exception $e) {
+        }
+        $this->assertInstanceOf(Client::class, $prop->getValue($request));
+    }
+
+    /**
+     * TODO : check that the request is not sent
+     */
+    public function testCancelPromise () {
+        $request = $this->createRequest();
+        $request->setEndPoint('http://github.com');
+        $promise = $request->callAsync('method', []);
+        try {
+            $promise->cancel();
+            $promise->wait();
+        } catch (\Exception $e){
+
+        }
+        $this->assertSame($promise::REJECTED, $promise->getState());
+    }
+
+    public function testErrorResponse() {
+
     }
 
 }

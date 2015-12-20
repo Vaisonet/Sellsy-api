@@ -5,7 +5,6 @@ namespace SellsyApi\Request;
 
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Promise\Promise;
 use GuzzleHttp\Promise\PromiseInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -114,7 +113,7 @@ class Request implements AsyncRequestInterface {
                 $promise->reject($e);
                 throw $e;
             }
-        }, function (RequestException $reqException) use ($promise, $requestId) {
+        }, function (\Exception $reqException) use ($promise, $requestId) {
             $this->logResponse($requestId, strval($reqException));
             $promise->reject($reqException);
             return $reqException;
