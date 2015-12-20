@@ -136,13 +136,15 @@ class Request implements AsyncRequestInterface {
      * @param mixed $method
      * @param mixed $params
      *
-     * @return ResponseInterface
+     * @return mixed
      */
     public function call ($method, $params) {
         $requestId = uniqid();
         $options   = $this->prepareCall($method, $params, $requestId);
 
-        return $this->handleResponse($this->getClient()->post('', $options));
+        $result = $this->handleResponse($this->getClient()->post('', $options));
+        $this->logResponse($requestId, $result);
+        return $result;
     }
 
     /**
