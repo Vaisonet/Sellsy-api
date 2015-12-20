@@ -21,8 +21,34 @@ class ClientTest extends \PHPUnit_Framework_TestCase {
     /**
      * @expectedException \InvalidArgumentException
      */
-    public function testConstructorWithoutAllRequiredParameters () {
+    public function testConstructorWithoutAllRequiredParametersUserToken () {
         new Client([]);
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testConstructorWithoutAllRequiredParametersUserSecret () {
+        new Client(['userToken' => 'xxx',]);
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testConstructorWithoutAllRequiredParametersConsumerToken () {
+        new Client(['userToken'  => 'xxx',
+                    'userSecret' => 'xxx',
+                   ]);
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testConstructorWithoutAllRequiredParametersConsumerSecret () {
+        new Client(['userToken'     => 'xxx',
+                    'userSecret'    => 'xxx',
+                    'consumerToken' => 'xxx',
+                   ]);
     }
 
     public function testGetService () {
