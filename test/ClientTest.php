@@ -5,6 +5,7 @@ namespace SellsyApi\Test;
 
 
 use SellsyApi\Client;
+use SellsyApi\Service\ServiceInterface;
 
 class ClientTest extends \PHPUnit_Framework_TestCase {
 
@@ -22,6 +23,23 @@ class ClientTest extends \PHPUnit_Framework_TestCase {
      */
     public function testConstructorWithoutAllRequiredParameters () {
         new Client([]);
+    }
+
+    public function testGetService () {
+        $client  = $this->createClient();
+        $service = $client->getService('name');
+        $this->assertInstanceOf(ServiceInterface::class, $service);
+    }
+
+    /**
+     * @return Client
+     */
+    protected function createClient () {
+        return new Client(['userToken'      => 'xxx',
+                           'userSecret'     => 'xxx',
+                           'consumerToken'  => 'xxx',
+                           'consumerSecret' => 'xxx',
+                          ]);
     }
 
 

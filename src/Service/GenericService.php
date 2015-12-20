@@ -31,6 +31,13 @@ class GenericService implements ServiceInterface {
     }
 
     /**
+     * @return string
+     */
+    public function getName () {
+        return $this->name;
+    }
+
+    /**
      * @return RequestInterface
      */
     public function getRequest () {
