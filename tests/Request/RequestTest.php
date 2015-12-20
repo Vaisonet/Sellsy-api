@@ -157,14 +157,103 @@ class RequestTest extends \PHPUnit_Framework_TestCase {
         try {
             $promise->cancel();
             $promise->wait();
-        } catch (\Exception $e){
+        } catch (\Exception $e) {
 
         }
         $this->assertSame($promise::REJECTED, $promise->getState());
     }
 
-    public function testErrorResponse() {
+    /**
+     * @expectedException \SellsyApi\Exception\SellsyError
+     * @expectedExceptionMessage Unexpected error
+     */
+    public function testErrorResponse () {
+        $request = $this->createRequest();
+        $prop    = new \ReflectionProperty($request, 'client');
+        $prop->setAccessible(TRUE);
+        $params = ['field' => 'value'];
+        $method = 'method';
+        $client = $this->createClientMock('post', $method, $params, new Response(200, [],
+                                                                                 '{"status":"error","error":{"code":"E_UNKNOW ","message":"Unexpected error","more":"Fatal error"}}'));
+        $prop->setValue($request, $client);
+        $request->call($method, $params);
+    }
 
+    /**
+     * @expectedException \UnexpectedValueException
+     * @expectedExceptionMessage Unknown Sellsy error
+     */
+    public function testInvalidErrorResponse () {
+        $request = $this->createRequest();
+        $prop    = new \ReflectionProperty($request, 'client');
+        $prop->setAccessible(TRUE);
+        $params = ['field' => 'value'];
+        $method = 'method';
+        $client = $this->createClientMock('post', $method, $params,
+                                          new Response(200, [], '{"status":"error","error":"error"}'));
+        $prop->setValue($request, $client);
+        $request->call($method, $params);
+    }
+
+    /**
+     * @expectedException \UnexpectedValueException
+     * @expectedExceptionMessage Unable to decode JSON Sellsy's response (response)
+     */
+    public function testInvalidJSONResponse () {
+        $request = $this->createRequest();
+        $prop    = new \ReflectionProperty($request, 'client');
+        $prop->setAccessible(TRUE);
+        $params = ['field' => 'value'];
+        $method = 'method';
+        $client = $this->createClientMock('post', $method, $params, new Response(200, [], 'response'));
+        $prop->setValue($request, $client);
+        $request->call($method, $params);
+    }
+
+    /**
+     * @expectedException \UnexpectedValueException
+     * @expectedExceptionMessage Field response not found in Sellsy's response ({"status":"success"})
+     */
+    public function testInvalidResponse () {
+        $request = $this->createRequest();
+        $prop    = new \ReflectionProperty($request, 'client');
+        $prop->setAccessible(TRUE);
+        $params = ['field' => 'value'];
+        $method = 'method';
+        $client = $this->createClientMock('post', $method, $params, new Response(200, [], '{"status":"success"}'));
+        $prop->setValue($request, $client);
+        $request->call($method, $params);
+    }
+
+    /**
+     * @expectedException \UnexpectedValueException
+     * @expectedExceptionMessage Field status not found in Sellsy's response (["response"])
+     */
+    public function testInvalidStatusResponse () {
+        $request = $this->createRequest();
+        $prop    = new \ReflectionProperty($request, 'client');
+        $prop->setAccessible(TRUE);
+        $params = ['field' => 'value'];
+        $method = 'method';
+        $client = $this->createClientMock('post', $method, $params, new Response(200, [], '["response"]'));
+        $prop->setValue($request, $client);
+        $request->call($method, $params);
+    }
+
+    /**
+     * @expectedException \SellsyApi\Exception\OAuthException
+     * @expectedExceptionMessage oauth_problem=signature_invalid
+     */
+    public function testOAuthProblem () {
+        $params  = ['field' => 'value'];
+        $method  = 'method';
+        $promise = new Promise();
+        $request = $this->createRequest();
+        $this->prepareRequest($request, 'postAsync', $method, $params, $promise);
+        $res = $request->callAsync($method, $params);
+        $this->assertInstanceOf(PromiseInterface::class, $res);
+        $promise->resolve(new Response(200, [], 'oauth_problem=signature_invalid'));
+        $res->wait();
     }
 
 }

@@ -13,6 +13,11 @@ class SellsyError extends Exception {
     protected $more;
 
     /**
+     * @var string
+     */
+    protected $sellsyCode;
+
+    /**
      * SellsyError constructor.
      *
      * @param string    $message
@@ -21,8 +26,16 @@ class SellsyError extends Exception {
      * @param Exception $previous
      */
     public function __construct ($message, $code, $more = NULL, Exception $previous = NULL) {
-        parent::__construct($message, $code, $previous);
-        $this->more = $more;
+        parent::__construct($message, 0, $previous);
+        $this->more       = $more;
+        $this->sellsyCode = $code;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSellsyCode () {
+        return $this->sellsyCode;
     }
 
     /**

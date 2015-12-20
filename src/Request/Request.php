@@ -8,6 +8,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Promise\Promise;
 use GuzzleHttp\Promise\PromiseInterface;
 use Psr\Http\Message\ResponseInterface;
+use SellsyApi\Exception\OAuthException;
 
 class Request implements AsyncRequestInterface {
 
@@ -193,20 +194,20 @@ class Request implements AsyncRequestInterface {
      * @param mixed $response
      *
      * @return mixed
-     * @throws \OAuthException
+     * @throws \SellsyApi\Exception\OAuthException
      * @throws \SellsyApi\Exception\SellsyError
      * @throws \UnexpectedValueException
      */
     protected function handleResponse ($response) {
 
         if (strstr($response, 'oauth_problem')) {
-            throw new \OAuthException($response);
+            throw new OAuthException($response);
         }
 
         $array = json_decode($response, TRUE);
 
         if (!is_array($array)) {
-            throw  new \UnexpectedValueException(sprintf('Unable  to decode JSON Sellsy\'s response (%s)', $response));
+            throw  new \UnexpectedValueException(sprintf('Unable to decode JSON Sellsy\'s response (%s)', $response));
         }
 
         if (!array_key_exists('status', $array)) {
