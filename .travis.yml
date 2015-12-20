@@ -9,7 +9,7 @@ before_install:
  - composer update
 
 install:
- - composer require satooshi/php-coveralls:~0.6@stable
+ - composer require satooshi/php-coveralls --dev
 
 before_script:
  - mkdir -p build/logs
