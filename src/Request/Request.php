@@ -142,8 +142,8 @@ class Request implements AsyncRequestInterface {
         $requestId = uniqid();
         $options   = $this->prepareCall($method, $params, $requestId);
 
-        $result = $this->handleResponse($this->getClient()->post('', $options));
-        $this->logResponse($requestId, $result);
+        $result = $this->handleResponse($this->getClient()->post('', $options)->getBody());
+        $this->logResponse($requestId, json_encode($result));
         return $result;
     }
 

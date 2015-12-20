@@ -35,6 +35,7 @@ class Client {
 
         $this->request = new Request($config['userToken'], $config['userSecret'], $config['consumerToken'],
                                      $config['consumerSecret']);
+        $this->request->setEndPoint('https://apifeed.sellsy.com/0/');
 
     }
 
