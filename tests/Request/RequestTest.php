@@ -83,7 +83,8 @@ class RequestTest extends \PHPUnit_Framework_TestCase {
         $prop->setAccessible(TRUE);
         $params = ['field' => 'value'];
         $method = 'method';
-        $client = $this->createClientMock('post', $method, $params, '{"status":"success","response":"result"}');
+        $client = $this->createClientMock('post', $method, $params,
+                                          new Response(200, [], '{"status":"success","response":"result"}'));
         $prop->setValue($request, $client);
         $this->assertEquals('result', $request->call($method, $params));
     }
