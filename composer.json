@@ -28,7 +28,7 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "SellsyApi\\Tests\\": "test/"
+      "SellsyApi\\Test\\": "tests/"
     }
   }
 }
