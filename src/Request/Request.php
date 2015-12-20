@@ -59,6 +59,37 @@ class Request implements AsyncRequestInterface {
     }
 
     /**
+     * @return Client
+     */
+    protected function getClient () {
+        if (is_null($this->client)) {
+            if (is_null($this->getEndPoint())) {
+                throw new \RuntimeException('endPoint is not set');
+            }
+            $this->client = new Client(['base_uri' => $this->endPoint]);
+        }
+        return $this->client;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEndPoint () {
+        return $this->endPoint;
+    }
+
+    /**
+     * @param string $endPoint
+     *
+     * @return Request
+     */
+    public function setEndPoint ($endPoint) {
+        $this->endPoint = $endPoint;
+        return $this;
+    }
+
+
+    /**
      * @param string $method
      * @param mixed  $params
      *
@@ -67,7 +98,7 @@ class Request implements AsyncRequestInterface {
     public function callAsync ($method, $params) {
         $requestId = uniqid();
         $options   = $this->prepareCall($method, $params, $requestId);
-        $response  = $this->client->postAsync('', $options);
+        $response  = $this->getClient()->postAsync('', $options);
 
         $promise = new Promise(function ($unwrap) use ($response) {
             return $response->wait($unwrap);
@@ -111,7 +142,7 @@ class Request implements AsyncRequestInterface {
         $requestId = uniqid();
         $options   = $this->prepareCall($method, $params, $requestId);
 
-        return $this->handleResponse($this->client->post('', $options));
+        return $this->handleResponse($this->getClient()->post('', $options));
     }
 
     /**
