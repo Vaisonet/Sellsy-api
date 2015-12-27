@@ -106,7 +106,7 @@ class Request implements AsyncRequestInterface {
             return $response->cancel();
         });
 
-        $response->then(function (ResponseInterface $res) use ($promise, $requestId) {
+        $response->then(function (ResponseInterface $res) use ($promise) {
             try {
                 $promise->resolve($this->handleResponse($res->getBody()));
                 return $res;
