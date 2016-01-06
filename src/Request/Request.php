@@ -168,13 +168,15 @@ class Request implements AsyncRequestInterface {
     }
 
     /**
-     * @return string[]
+     * @param string $requestId
+     *
+     * @return \string[]
      */
-    protected function getOAuthHeader () {
+    protected function getOAuthHeader (&$requestId) {
         $encodedKey  = rawurlencode($this->consumerSecret) . '&' . rawurlencode($this->userSecret);
         $oauthParams = ['oauth_consumer_key'     => $this->consumerToken,
                         'oauth_token'            => $this->userToken,
-                        'oauth_nonce'            => md5(time() + rand(0, 1000)),
+                        'oauth_nonce'            => $requestId,
                         'oauth_timestamp'        => time(),
                         'oauth_signature_method' => 'PLAINTEXT',
                         'oauth_version'          => '1.0',
@@ -252,7 +254,7 @@ class Request implements AsyncRequestInterface {
             $multipart[] = ['name' => $key, 'contents' => $value];
         }
 
-        $options = ['headers'   => $this->getOAuthHeader(),
+        $options = ['headers'   => $this->getOAuthHeader($requestId),
                     'multipart' => $multipart,
                     'verify'    => !preg_match("!^https!i", $this->endPoint),
         ];
