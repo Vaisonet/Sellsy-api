@@ -4,6 +4,7 @@ namespace SellsyApi;
 
 use SellsyApi\Request\Request;
 use SellsyApi\Service\GenericService;
+use SellsyApi\Service\ServiceInterface;
 
 class Client {
 
@@ -42,7 +43,7 @@ class Client {
     /**
      * @param string $name
      *
-     * @return GenericService
+     * @return ServiceInterface
      */
     public function getService ($name) {
         return new GenericService($this->request, $name);

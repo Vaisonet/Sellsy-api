@@ -3,7 +3,6 @@
 
 namespace SellsyApi\Service;
 
-use GuzzleHttp\Promise\PromiseInterface;
 use SellsyApi\Request\AsyncRequestInterface;
 use SellsyApi\Request\RequestInterface;
 
@@ -38,14 +37,14 @@ class GenericService implements ServiceInterface {
     }
 
     /**
-     * @return RequestInterface
+     * @inheritdoc
      */
     public function getRequest () {
         return $this->request;
     }
 
     /**
-     * @return AsyncRequestInterface
+     * @inheritdoc
      */
     public function getAsyncRequest () {
         if (!($this->request instanceof AsyncRequestInterface)) {
@@ -55,20 +54,14 @@ class GenericService implements ServiceInterface {
     }
 
     /**
-     * @param string $method
-     * @param mixed  $params
-     *
-     * @return mixed
+     * @inheritdoc
      */
     public function call ($method, $params) {
         return $this->getRequest()->call($this->name . '.' . $method, $params);
     }
 
     /**
-     * @param string $method
-     * @param mixed  $params
-     *
-     * @return PromiseInterface
+     * @inheritdoc
      */
     public function callAsync ($method, $params) {
         return $this->getAsyncRequest()->callAsync($this->name . '.' . $method, $params);
