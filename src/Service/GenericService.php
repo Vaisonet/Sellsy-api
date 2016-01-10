@@ -67,4 +67,37 @@ class GenericService implements ServiceInterface {
         return $this->getAsyncRequest()->callAsync($this->name . '.' . $method, $params);
     }
 
+
+    /**
+     * @inheritdoc
+     */
+    public function retryableCall (callable $callback) {
+        return $this->_retryCall('call', $callback);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function retryableCallAsync (callable $callback) {
+        return $this->_retryCall('callAsync', $callback);
+    }
+
+    /**
+     * @param string     $methodToCall
+     * @param callable   $callback
+     * @param int        $retry
+     * @param \Exception $e
+     *
+     * @return mixed
+     */
+    protected function _retryCall ($methodToCall, callable $callback, $retry = 0, \Exception $e = NULL) {
+        list($method, $params) = $callback($this, $retry, $e);
+        try {
+            return $this->$methodToCall($method, $params);
+        } catch (\Exception $e) {
+            return $this->_retryCall($method, $callback, $retry + 1, $e);
+        }
+    }
+
+
 }

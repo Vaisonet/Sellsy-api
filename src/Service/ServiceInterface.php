@@ -36,4 +36,18 @@ interface ServiceInterface {
      */
     public function callAsync ($method, $params);
 
+    /**
+     * @param callable $callback
+     *
+     * @return mixed
+     */
+    public function retryableCall(callable $callback);
+
+    /**
+     * @param callable $callback
+     *
+     * @return PromiseInterface
+     */
+    public function retryableCallAsync(callable $callback);
+
 }
