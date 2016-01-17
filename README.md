@@ -8,10 +8,10 @@ Sellsy API Client Library
 PHP library which helps to call Sellsy's API
 
 ```php
-<?php
 $client = new Client(['userToken'      => 'xxx', 'userSecret'     => 'xxx',
                       'consumerToken'  => 'xxx', 'consumerSecret' => 'xxx',
                      ]);
+                     
 var_dump($client->getService('Infos')->call('getInfos', []));
 $promise = $client->getService('Infos')->callAsync('getInfos', [])->then(function($res) {
     var_dump($res);
@@ -33,6 +33,8 @@ Then add Sellsy API as a dependency of your project:
 How to use
 ----------
 
+### Setup the library
+
 The library provide you a class called `Service` which represent a part of the Sellsy's API.
 The service allows you to call api associated to this module.
 For instance, the service `Accountdatas` allows to call all method which start with Accountdatas in Sellsy's API, like Accountdatas.getTaxe or Accountdatas.updateUnit
@@ -46,6 +48,8 @@ $client = new Client(['userToken'      => 'xxx', 'userSecret'     => 'xxx',
                       'consumerToken'  => 'xxx', 'consumerSecret' => 'xxx',
                      ]);
 ```
+
+### Call APIs
 
 Once you have you client, you can retreive a `Service` by calling the method `getService($serviceName)`:
 
@@ -67,6 +71,26 @@ $response = $promise->wait();
 ```
 
 You can find more information about `Promise` [here](https://github.com/guzzle/promises "Github of Guzzle Promises").
+
+### Handle errors
+
+In order to handle errors, you should use retryable version of the previous methodes: `retryableCall($callable)` and
+`retryableCallAsync($callable)`. In case of an error which is handle by the library, this one will try to send again the
+requests by calling `$callable`.
+
+`$callable` must be a function which return the parameters to give to the `call()` and `callAsync()` methodes.
+
+```php
+var_dump($client->getService('Infos')->retryableCall(function (ServiceInterface $service, $retry, $e) {
+    return ['getInfos', []];
+}));
+$promise = $client->getService('Infos')->retryableCallAsync(function (ServiceInterface $service, $retry, $e) {
+    return ['getInfos', []];
+})->then(function ($res) {
+    var_dump($res);
+});
+$promise->wait();
+```
 
 How to run tests
 ----------------
