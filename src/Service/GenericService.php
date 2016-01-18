@@ -95,7 +95,7 @@ class GenericService implements ServiceInterface {
         try {
             return $this->$methodToCall($method, $params);
         } catch (\Exception $e) {
-            return $this->_retryCall($method, $callback, $retry + 1, $e);
+            return $this->_retryCall($methodToCall, $callback, $retry + 1, $e);
         }
     }
 
