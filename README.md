@@ -78,13 +78,24 @@ In order to handle errors, you should use retryable version of the previous meth
 `retryableCallAsync($callable)`. In case of an error which is handle by the library, this one will try to send again the
 requests by calling `$callable`.
 
-`$callable` must be a function which return the parameters to give to the `call()` and `callAsync()` methodes.
+`$callable` must be a function which return the parameters to give to the `call()` and `callAsync()` methods.
+
+`$callable` takes 3 arguments:
+  * The instance of the `ServiceInterface` use to send the call
+  * The retry number. The first time this value is 0.
+  * The error received
 
 ```php
 var_dump($client->getService('Infos')->retryableCall(function (ServiceInterface $service, $retry, $e) {
+    if ($retry > 3) {
+        throw $e;
+    }
     return ['getInfos', []];
 }));
 $promise = $client->getService('Infos')->retryableCallAsync(function (ServiceInterface $service, $retry, $e) {
+    if ($retry > 3) {
+        throw $e;
+    }
     return ['getInfos', []];
 })->then(function ($res) {
     var_dump($res);
