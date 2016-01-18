@@ -81,7 +81,7 @@ requests by calling `$callable`.
 `$callable` must be a function which return the parameters to give to the `call()` and `callAsync()` methods.
 
 `$callable` takes 3 arguments:
-  * The instance of the `ServiceInterface` use to send the call
+  * The instance of the `ServiceInterface` used to send the call
   * The retry number. The first time this value is 0.
   * The error received
 
