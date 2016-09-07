@@ -4,6 +4,7 @@
 namespace SellsyApi\Test;
 
 
+use Psr\Log\LoggerInterface;
 use SellsyApi\Client;
 use SellsyApi\Service\ServiceInterface;
 
@@ -55,6 +56,14 @@ class ClientTest extends \PHPUnit_Framework_TestCase {
         $client  = $this->createClient();
         $service = $client->getService('name');
         $this->assertInstanceOf(ServiceInterface::class, $service);
+    }
+
+    public function testGetLogger () {
+        $client  = $this->createClient();
+        $this->assertNull($client->getLogger());
+        $logger = $this->getMock(LoggerInterface::class);
+        $client->setLogger($logger);
+        $this->assertSame($logger, $client->getLogger());
     }
 
     /**

@@ -9,6 +9,7 @@ use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Promise\Promise;
 use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\Psr7\Response;
+use Psr\Log\LoggerInterface;
 use SellsyApi\Request\Request;
 
 class RequestTest extends \PHPUnit_Framework_TestCase {
@@ -254,6 +255,14 @@ class RequestTest extends \PHPUnit_Framework_TestCase {
         $this->assertInstanceOf(PromiseInterface::class, $res);
         $promise->resolve(new Response(200, [], 'oauth_problem=signature_invalid'));
         $res->wait();
+    }
+
+    public function testGetLogger () {
+        $request  = $this->createRequest();
+        $this->assertNull($request->getLogger());
+        $logger = $this->getMock(LoggerInterface::class);
+        $request->setLogger($logger);
+        $this->assertSame($logger, $request->getLogger());
     }
 
 }
