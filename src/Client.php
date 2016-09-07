@@ -2,6 +2,7 @@
 
 namespace SellsyApi;
 
+use Psr\Log\LoggerInterface;
 use SellsyApi\Request\Request;
 use SellsyApi\Service\GenericService;
 use SellsyApi\Service\ServiceInterface;
@@ -38,6 +39,31 @@ class Client {
                                      $config['consumerSecret']);
         $this->request->setEndPoint('https://apifeed.sellsy.com/0/');
 
+        if (array_key_exists('logger', $config)) {
+            $this->setLogger($config['logger']);
+        }
+
+    }
+
+    /**
+     * Set the request logger
+     *
+     * @param LoggerInterface $logger
+     *
+     * @return Client
+     */
+    public function setLogger (LoggerInterface $logger) {
+        $this->request->setLogger($logger);
+        return $this;
+    }
+
+    /**
+     * Get the request logger
+     *
+     * @return LoggerInterface
+     */
+    public function getLogger () {
+        return $this->request->getLogger();
     }
 
     /**

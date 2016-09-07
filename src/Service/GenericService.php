@@ -3,6 +3,7 @@
 
 namespace SellsyApi\Service;
 
+use Psr\Log\LoggerInterface;
 use SellsyApi\Request\AsyncRequestInterface;
 use SellsyApi\Request\RequestInterface;
 
@@ -41,6 +42,27 @@ class GenericService implements ServiceInterface {
      */
     public function getRequest () {
         return $this->request;
+    }
+
+    /**
+     * Set the request logger
+     *
+     * @param LoggerInterface $logger
+     *
+     * @return GenericService
+     */
+    public function setLogger (LoggerInterface $logger) {
+        $this->request->setLogger($logger);
+        return $this;
+    }
+
+    /**
+     * Get the request logger
+     *
+     * @return LoggerInterface
+     */
+    public function getLogger () {
+        return $this->request->getLogger();
     }
 
     /**

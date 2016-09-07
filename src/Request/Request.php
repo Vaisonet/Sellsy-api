@@ -8,6 +8,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Promise\Promise;
 use GuzzleHttp\Promise\PromiseInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Log\LoggerInterface;
 use SellsyApi\Exception\OAuthException;
 
 class Request implements AsyncRequestInterface {
@@ -38,6 +39,11 @@ class Request implements AsyncRequestInterface {
      * @var string
      */
     protected $consumerSecret;
+
+    /**
+     * @var LoggerInterface
+     */
+    protected $logger;
 
     /**
      * Request constructor.
@@ -85,6 +91,25 @@ class Request implements AsyncRequestInterface {
      */
     public function setEndPoint ($endPoint) {
         $this->endPoint = $endPoint;
+        return $this;
+    }
+
+
+
+    /**
+     * @return LoggerInterface
+     */
+    public function getLogger () {
+        return $this->logger;
+    }
+
+    /**
+     * @param LoggerInterface $logger
+     *
+     * @return Request
+     */
+    public function setLogger (LoggerInterface $logger) {
+        $this->logger = $logger;
         return $this;
     }
 
@@ -148,23 +173,23 @@ class Request implements AsyncRequestInterface {
     }
 
     /**
-     * TODO
-     *
      * @param string $requestId
      * @param string $message
      */
     protected function logRequest ($requestId, $message) {
-        printf("[%s]%s --> %s\n", $requestId, date('c'), $message);
+        if ($this->getLogger()) {
+            $this->getLogger()->debug(sprintf("[%s]%s --> %s\n", $requestId, date('c'), $message));
+        }
     }
 
     /**
-     * TODO
-     *
      * @param string $requestId
      * @param string $message
      */
     protected function logResponse ($requestId, $message) {
-        printf("[%s]%s <-- %s\n", $requestId, date('c'), $message);
+        if ($this->getLogger()) {
+            $this->getLogger()->debug(sprintf("[%s]%s <-- %s\n", $requestId, date('c'), $message));
+        }
     }
 
     /**
@@ -263,6 +288,5 @@ class Request implements AsyncRequestInterface {
 
         return $options;
     }
-
 
 }
