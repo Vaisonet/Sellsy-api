@@ -44,6 +44,9 @@ To create a client just call its constructor. Its first argument is an array whi
 You must provide the credentials to call the API which include the user token and secret, and the consumer token and secret that you can find in Sellsy interface.
 
 ```php
+require 'path/to/vendor/autoload.php';
+use SellsyApi\Client;
+
 $client = new Client(['userToken'      => 'xxx', 'userSecret'     => 'xxx',
                       'consumerToken'  => 'xxx', 'consumerSecret' => 'xxx',
                      ]);
