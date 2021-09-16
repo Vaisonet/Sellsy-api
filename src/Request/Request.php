@@ -10,6 +10,9 @@ use GuzzleHttp\Promise\PromiseInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
 use SellsyApi\Exception\OAuthException;
+use GuzzleHttp\HandlerStack;
+use Spatie\GuzzleRateLimiterMiddleware\RateLimiterMiddleware;
+
 
 class Request implements AsyncRequestInterface {
 
@@ -72,7 +75,10 @@ class Request implements AsyncRequestInterface {
             if (is_null($this->getEndPoint())) {
                 throw new \RuntimeException('endPoint is not set');
             }
-            $this->client = new Client(['base_uri' => $this->endPoint]);
+            $stack = HandlerStack::create();
+            $stack->push(RateLimiterMiddleware::perSecond(5));
+            $this->client = new Client(['base_uri' => $this->endPoint,
+                'handler' => $stack]);
         }
         return $this->client;
     }
